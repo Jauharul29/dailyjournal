@@ -1,54 +1,56 @@
 <?php 
-function upload_foto($File){    
-	$uploadOk = 1;
-	$hasil = array();
-	$message = '';
- 
-	//File properties:
-	$FileName = $File['name'];
-	$TmpLocation = $File['tmp_name'];
-	$FileSize = $File['size'];
+function upload_foto($file) {
+    // Inisialisasi variabel hasil dan status
+    $uploadOk = 1;
+    $hasil = array();
+    $message = '';
 
-	//Figure out what kind of file this is:
-	$FileExt = explode('.', $FileName);
-	$FileExt = strtolower(end($FileExt));
+    // Properti file yang diunggah
+    $fileName = $file['name'];
+    $tmpLocation = $file['tmp_name'];
+    $fileSize = $file['size'];
 
-	//Allowed files:
-	$Allowed = array('jpg', 'png', 'gif', 'jpeg' ,'img');  
+    // Ekstensi file
+    $fileExt = explode('.', $fileName);
+    $fileExt = strtolower(end($fileExt));
 
-	// Check file size
-	if ($FileSize > 5000000) {
-		$message .= "Sorry, your file is too large, max 500KB. ";
-		$uploadOk = 0;
-	}
+    // Ekstensi file yang diperbolehkan
+    $allowed = array('jpg', 'jpeg', 'png', 'gif');  
 
-	// Allow certain file formats
-	if(!in_array($FileExt, $Allowed)){
-		$message .= "Sorry, only JPG, JPEG, PNG & GIF files are allowed. ";
-		$uploadOk = 0; 
-	}
+    // Validasi ukuran file (maksimal 5 MB)
+    if ($fileSize > 5000000) { // 5MB
+        $message .= "Maaf, ukuran file terlalu besar. Maksimal 5MB. ";
+        $uploadOk = 0;
+    }
 
-	// Check if $uploadOk is set to 0 by an error
-	if ($uploadOk == 0) {
-		$message .= "Sorry, your file was not uploaded. ";
-		$hasil['status'] = false; 
-		// if everything is ok, try to upload file
-	}else{
-		//Create new filename:
-        $NewName = date("YmdHis"). '.' . $FileExt;
-        $UploadDestination = "img/". $NewName; 
+    // Validasi ekstensi file
+    if (!in_array($fileExt, $allowed)) {
+        $message .= "Maaf, hanya file dengan format JPG, JPEG, PNG, dan GIF yang diperbolehkan. ";
+        $uploadOk = 0; 
+    }
 
-		if (move_uploaded_file($TmpLocation, $UploadDestination)) {
-			//echo "The file has been uploaded.";
-			$message .= $NewName;
-			$hasil['status'] = true; 
-		}else{
-			$message .= "Sorry, there was an error uploading your file. ";
-			$hasil['status'] = false; 
-		}
-	}
-	
-	$hasil['message'] = $message; 
-	return $hasil;
+    // Jika validasi gagal
+    if ($uploadOk == 0) {
+        $message .= "Maaf, file Anda gagal diunggah. ";
+        $hasil['status'] = false; 
+    } else {
+        // Buat nama file baru untuk mencegah duplikasi
+        $newName = date("YmdHis") . '.' . $fileExt;
+        $uploadDestination = "img/" . $newName; 
+
+        // Pindahkan file ke folder tujuan
+        if (move_uploaded_file($tmpLocation, $uploadDestination)) {
+            $message .= "File berhasil diunggah: " . $newName;
+            $hasil['status'] = true; 
+            $hasil['file_name'] = $newName; // Nama file yang berhasil diunggah
+        } else {
+            $message .= "Maaf, terjadi kesalahan saat mengunggah file. ";
+            $hasil['status'] = false; 
+        }
+    }
+
+    // Mengembalikan hasil
+    $hasil['message'] = $message; 
+    return $hasil;
 }
 ?>

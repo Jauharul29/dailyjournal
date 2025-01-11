@@ -33,13 +33,13 @@ if (!isset($_SESSION['username'])) {
             min-height: 100%;
         }
         body {
-            margin-bottom: 100px; /* Margin bottom by footer height */
+            margin-bottom: 100px; 
         }
         footer {
             position: absolute;
             bottom: 0;
             width: 100%;
-            height: 100px; /* Set the fixed height of the footer here */ 
+            height: 100px; 
         }
     </style>
 </head>
@@ -67,15 +67,24 @@ if (!isset($_SESSION['username'])) {
             <li class="nav-item">
                 <a class="nav-link" href="admin.php?page=article">Article</a>
             </li> 
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle text-danger fw-bold" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <?= $_SESSION['username']?>
-                </a>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="logout.php">Logout</a></li> 
-                </ul>
+            <li class="nav-item">
+                <a class="nav-link" href="admin.php?page=gallery">Gallery</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="admin.php?page=schedule">Schedule</a>
             </li> 
-        </ul>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-person-circle"></i> <?= $_SESSION['username']; ?>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="admin.php?page=user_manage">Manajemen User</a></li>
+                        <li><a class="dropdown-item" href="admin.php?page=profile">Profile</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="logout.php">Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
         </div>
     </div>
     </nav>
@@ -85,12 +94,14 @@ if (!isset($_SESSION['username'])) {
     <div class="container">
         <?php
         if(isset($_GET['page'])){
-        ?>
-            <h4 class="lead display-6 pb-2 border-bottom border-danger-subtle"><?= ucfirst($_GET['page'])?></h4>
-            <?php
-            include($_GET['page'].".php");
+            $page = $_GET['page'];
+            if(file_exists($page.".php")){
+                include($page.".php");
+            } else {
+                echo "<h4 class='text-danger'>Halaman tidak ditemukan!</h4>";
+            }
         }else{
-        ?>
+            ?>
             <h4 class="lead display-6 pb-2 border-bottom border-danger-subtle">Dashboard</h4>
             <?php
             include("dashboard.php");

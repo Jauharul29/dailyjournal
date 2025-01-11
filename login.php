@@ -18,7 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 	//prepared statement
   $stmt = $conn->prepare("SELECT username 
-                          FROM users
+                          FROM user
                           WHERE username=? AND password=?");
 
 	//parameter binding 
